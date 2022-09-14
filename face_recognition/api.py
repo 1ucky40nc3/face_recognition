@@ -1,4 +1,3 @@
-%%writefile face_recognition/api.py
 # -*- coding: utf-8 -*-
 
 import PIL.Image
