@@ -1,3 +1,4 @@
+%%writefile face_recognition/api.py
 # -*- coding: utf-8 -*-
 
 import PIL.Image
@@ -200,7 +201,7 @@ def face_landmarks(face_image, face_locations=None, model="large"):
         raise ValueError("Invalid landmarks model type. Supported models are ['small', 'large'].")
 
 
-def face_encodings(face_image, known_face_locations=None, num_jitters=1, model="small"):
+def face_encodings(face_image, known_face_locations=None, num_jitters=1, model="small", return_raw_landmarks=False):
     """
     Given an image, return the 128-dimension face encoding for each face in the image.
 
@@ -211,7 +212,10 @@ def face_encodings(face_image, known_face_locations=None, num_jitters=1, model="
     :return: A list of 128-dimensional face encodings (one for each face in the image)
     """
     raw_landmarks = _raw_face_landmarks(face_image, known_face_locations, model)
-    return [np.array(face_encoder.compute_face_descriptor(face_image, raw_landmark_set, num_jitters)) for raw_landmark_set in raw_landmarks]
+    encodings = [np.array(face_encoder.compute_face_descriptor(face_image, raw_landmark_set, num_jitters)) for raw_landmark_set in raw_landmarks]
+    if return_raw_landmarks:
+        return encodings, raw_landmarks
+    return encodings
 
 
 def compare_faces(known_face_encodings, face_encoding_to_check, tolerance=0.6):
